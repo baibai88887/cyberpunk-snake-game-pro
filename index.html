@@ -3,44 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>贪吃蛇游戏</title>
+    <title>NEON SNAKE - 赛博朋克贪吃蛇</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="game-container">
-        <h1 class="game-title">贪吃蛇游戏</h1>
-        
+        <h1 class="game-title">NEON SNAKE</h1>
+
         <div class="game-info">
-            <div class="score">分数: <span id="score">0</span></div>
-            <div class="level">等级: <span id="level">1</span></div>
+            <div class="score">SCORE: <span id="score">0</span></div>
+            <div class="level">LEVEL: <span id="level">1</span></div>
         </div>
-        
+
         <canvas id="gameCanvas" width="350" height="350"></canvas>
-        
+
         <div class="game-controls">
-            <button id="startBtn">开始游戏</button>
-            <button id="pauseBtn" disabled>暂停游戏</button>
-            <button id="restartBtn" disabled>重新开始</button>
+            <button id="startBtn">启动程序</button>
+            <button id="pauseBtn" disabled>暂停运行</button>
+            <button id="restartBtn" disabled>重新初始化</button>
         </div>
-        
-        <div class="game-instructions">
-            <h3>游戏说明</h3>
-            <p>使用方向键控制贪吃蛇移动</p>
-            <p>吃到食物增加分数和长度</p>
-            <p>碰到边界或自身游戏结束</p>
-            <p>等级越高，速度越快</p>
+
+        <div class="game-info-container">
+            <div class="game-instructions">
+                <h3>操作指南</h3>
+                <p>【方向键】控制移动方向</p>
+                <p>【空格键】暂停/继续运行</p>
+                <p>【规则】吸收能量块提升等级</p>
+                <p>【警告】触碰边界或自身将终止程序</p>
+            </div>
+            
+            <div class="game-leaderboard">
+                <h3>排行榜</h3>
+                <div id="leaderboard" class="leaderboard-list">
+                    <div class="leaderboard-empty">暂无记录</div>
+                </div>
+            </div>
         </div>
-        
+
         <div id="gameOverModal" class="modal">
             <div class="modal-content">
-                <h2>游戏结束</h2>
-                <p>最终分数: <span id="finalScore">0</span></p>
+                <h2>系统终止</h2>
+                <p>最终得分: <span id="finalScore">0</span></p>
                 <p>最终等级: <span id="finalLevel">1</span></p>
-                <button id="playAgainBtn">再玩一次</button>
+                <button id="playAgainBtn">重新启动</button>
             </div>
         </div>
     </div>
-    
+
     <script src="script.js"></script>
 </body>
 </html>

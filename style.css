@@ -7,7 +7,10 @@
 /* 赛博朋克基础样式 */
 body {
     font-family: 'Courier New', monospace;
-    background: linear-gradient(135deg, #000000 0%, #1a0033 50%, #000000 100%);
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(0, 255, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 100%, rgba(255, 0, 255, 0.1) 0%, transparent 40%),
+        linear-gradient(135deg, #000000 0%, #0a0a1a 30%, #0f0f2a 70%, #000000 100%);
     color: #00ffff;
     display: flex;
     flex-direction: column;
@@ -17,6 +20,7 @@ body {
     padding: 20px;
     overflow-y: auto;
     overflow-x: hidden;
+    position: relative;
 }
 
 /* 背景网格动画 */
@@ -27,27 +31,48 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: 
-        linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
-    background-size: 50px 50px;
+    background-image:
+        linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.08) 1px, transparent 1px),
+        radial-gradient(circle at 1px 1px, rgba(0, 255, 255, 0.15) 1px, transparent 0);
+    background-size: 60px 60px, 60px 60px, 20px 20px;
     z-index: -1;
-    animation: gridMove 20s linear infinite;
+    animation: gridMove 25s linear infinite;
+}
+
+/* 添加六边形网格背景 */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle at center, rgba(0, 255, 255, 0.03) 0%, transparent 50%),
+        repeating-linear-gradient(60deg, transparent, transparent 30px, rgba(255, 0, 255, 0.02) 31px, transparent 32px);
+    z-index: -1;
+    animation: hexRotate 60s linear infinite;
 }
 
 .game-container {
     text-align: center;
-    background: rgba(0, 0, 0, 0.8);
+    background:
+        linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(10, 10, 30, 0.9) 100%);
     border: 2px solid #ff00ff;
     border-radius: 0;
-    padding: 25px;
-    box-shadow: 
-        0 0 20px rgba(0, 255, 255, 0.5),
-        inset 0 0 20px rgba(255, 0, 255, 0.2);
+    padding: 15px;
+    box-shadow:
+        0 0 30px rgba(0, 255, 255, 0.4),
+        0 0 60px rgba(255, 0, 255, 0.2),
+        inset 0 0 30px rgba(0, 255, 255, 0.1),
+        inset 0 0 60px rgba(255, 0, 255, 0.05);
     max-width: 500px;
     width: 100%;
+    max-height: calc(100vh - 60px);
     position: relative;
-    overflow: hidden;
+    overflow-y: auto;
+    backdrop-filter: blur(10px);
 }
 
 /* 容器边框动画 */
@@ -58,40 +83,93 @@ body::before {
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff, #00ffff);
+    background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff, #00ffff, #ff00ff);
+    background-size: 400% 400%;
     z-index: -1;
     animation: borderGlow 3s linear infinite;
 }
 
+/* 添加科技感边框装饰 */
+.game-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1;
+    background-image:
+        linear-gradient(90deg, transparent 49.5%, rgba(0, 255, 255, 0.1) 49.5%, rgba(0, 255, 255, 0.1) 50.5%, transparent 50.5%),
+        linear-gradient(0deg, transparent 49.5%, rgba(0, 255, 255, 0.1) 49.5%, rgba(0, 255, 255, 0.1) 50.5%, transparent 50.5%);
+    background-size: 100px 100px;
+}
+
 .game-title {
-    font-size: 2.2rem;
-    margin-bottom: 12px;
+    font-size: 2rem;
+    margin-bottom: 8px;
     color: #ff00ff;
-    text-shadow: 
+    text-shadow:
         0 0 10px rgba(255, 0, 255, 0.8),
-        0 0 20px rgba(255, 0, 255, 0.6);
+        0 0 20px rgba(255, 0, 255, 0.6),
+        0 0 30px rgba(0, 255, 255, 0.4);
     font-family: 'Courier New', monospace;
     font-weight: bold;
-    letter-spacing: 2px;
+    letter-spacing: 3px;
+    position: relative;
+    text-transform: uppercase;
     animation: glitchText 2s infinite;
+}
+
+.game-title::before {
+    content: 'NEON SNAKE';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    color: #00ffff;
+    opacity: 0.3;
+    transform: translateX(-2px) translateY(-2px);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    animation: titleGlow 2s ease-in-out infinite;
 }
 
 .game-info {
     display: flex;
     justify-content: space-around;
-    margin-bottom: 12px;
-    font-size: 1.1rem;
+    margin-bottom: 8px;
+    font-size: 1rem;
     font-weight: bold;
 }
 
 .score, .level {
-    background: rgba(0, 0, 0, 0.7);
-    padding: 8px 18px;
+    background:
+        linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 20, 40, 0.8) 100%);
+    padding: 6px 15px;
     border: 1px solid #00ffff;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    box-shadow:
+        0 0 10px rgba(0, 255, 255, 0.5),
+        inset 0 0 10px rgba(0, 255, 255, 0.1);
     font-family: 'Courier New', monospace;
     text-transform: uppercase;
     letter-spacing: 1px;
+    position: relative;
+    overflow: hidden;
+}
+
+.score::before, .level::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.score:hover::before, .level:hover::before {
+    left: 100%;
 }
 
 #score, #level {
@@ -103,15 +181,18 @@ body::before {
 #gameCanvas {
     border: 2px solid #00ffff;
     border-radius: 0;
-    background-color: rgba(0, 0, 0, 0.9);
+    background:
+        linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(5, 5, 25, 0.95) 100%);
     display: block;
-    margin: 0 auto 15px;
-    box-shadow: 
-        0 0 20px rgba(0, 255, 255, 0.5),
-        inset 0 0 15px rgba(255, 0, 255, 0.2);
+    margin: 0 auto 10px;
+    box-shadow:
+        0 0 30px rgba(0, 255, 255, 0.4),
+        0 0 60px rgba(255, 0, 255, 0.2),
+        inset 0 0 20px rgba(0, 255, 255, 0.1);
     position: relative;
     width: 350px;
     height: 350px;
+    z-index: 2;
 }
 
 /* Canvas扫描线效果 */
@@ -122,21 +203,29 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: repeating-linear-gradient(
-        0deg,
-        rgba(0, 0, 0, 0.15),
-        rgba(0, 0, 0, 0.15) 1px,
-        transparent 1px,
-        transparent 2px
-    );
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.1),
+            rgba(0, 0, 0, 0.1) 1px,
+            transparent 1px,
+            transparent 2px
+        ),
+        linear-gradient(
+            180deg,
+            transparent 0%,
+            rgba(0, 255, 255, 0.02) 50%,
+            transparent 100%
+        );
     pointer-events: none;
+    animation: scanLine 8s linear infinite;
 }
 
 .game-controls {
     display: flex;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin-bottom: 10px;
     flex-wrap: wrap;
 }
 
@@ -147,12 +236,15 @@ button {
     font-family: 'Courier New', monospace;
     border: 1px solid #ff00ff;
     border-radius: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background:
+        linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(20, 0, 40, 0.8) 100%);
     color: #ff00ff;
     cursor: pointer;
     transition: all 0.3s ease;
     min-width: 110px;
-    box-shadow: 0 0 12px rgba(255, 0, 255, 0.5);
+    box-shadow:
+        0 0 12px rgba(255, 0, 255, 0.5),
+        inset 0 0 10px rgba(255, 0, 255, 0.1);
     text-transform: uppercase;
     letter-spacing: 1px;
     position: relative;
@@ -171,9 +263,15 @@ button::before {
 }
 
 button:hover {
-    background: rgba(255, 0, 255, 0.1);
-    box-shadow: 0 0 25px rgba(255, 0, 255, 0.8);
+    background:
+        linear-gradient(135deg, rgba(255, 0, 255, 0.15) 0%, rgba(255, 0, 255, 0.1) 100%);
+    box-shadow:
+        0 0 25px rgba(255, 0, 255, 0.8),
+        0 0 50px rgba(0, 255, 255, 0.4),
+        inset 0 0 20px rgba(255, 0, 255, 0.2);
     transform: translateY(-2px);
+    border-color: #00ffff;
+    color: #00ffff;
 }
 
 button:hover::before {
@@ -199,12 +297,28 @@ button:disabled::before {
 }
 
 .game-instructions {
-    background: rgba(0, 0, 0, 0.7);
+    background:
+        linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 15, 30, 0.8) 100%);
     padding: 15px;
     border: 1px solid #00ffff;
-    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    box-shadow:
+        0 0 10px rgba(0, 255, 255, 0.3),
+        inset 0 0 10px rgba(0, 255, 255, 0.1);
     margin-top: 15px;
     text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-instructions::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00ffff, transparent);
+    animation: instructionGlow 3s ease-in-out infinite;
 }
 
 .game-instructions h3 {
@@ -238,16 +352,21 @@ button:disabled::before {
 }
 
 .modal-content {
-    background: rgba(0, 0, 0, 0.95);
+    background:
+        linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(10, 0, 30, 0.95) 100%);
     margin: 15% auto;
     padding: 30px;
     border: 2px solid #ff00ff;
     width: 90%;
     max-width: 400px;
     text-align: center;
-    box-shadow: 0 0 40px rgba(255, 0, 255, 0.6);
+    box-shadow:
+        0 0 40px rgba(255, 0, 255, 0.6),
+        0 0 80px rgba(0, 255, 255, 0.3),
+        inset 0 0 20px rgba(255, 0, 255, 0.1);
     animation: slideInGlitch 0.5s ease;
     position: relative;
+    backdrop-filter: blur(10px);
 }
 
 .modal-content::before {
@@ -266,10 +385,13 @@ button:disabled::before {
     color: #ff00ff;
     margin-bottom: 20px;
     font-size: 2.2rem;
-    text-shadow: 0 0 20px rgba(255, 0, 255, 0.8);
+    text-shadow:
+        0 0 20px rgba(255, 0, 255, 0.8),
+        0 0 40px rgba(0, 255, 255, 0.4);
     font-family: 'Courier New', monospace;
     text-transform: uppercase;
     letter-spacing: 4px;
+    animation: modalGlow 2s ease-in-out infinite;
 }
 
 .modal-content p {
@@ -325,6 +447,45 @@ button:disabled::before {
     to { opacity: 1; }
 }
 
+@keyframes hexRotate {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1.1); }
+}
+
+@keyframes scanLine {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(100%); }
+}
+
+@keyframes titleGlow {
+    0%, 100% {
+        opacity: 0.3;
+        transform: translateX(-2px) translateY(-2px);
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateX(2px) translateY(2px);
+    }
+}
+
+@keyframes instructionGlow {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+@keyframes modalGlow {
+    0%, 100% {
+        text-shadow:
+            0 0 20px rgba(255, 0, 255, 0.8),
+            0 0 40px rgba(0, 255, 255, 0.4);
+    }
+    50% {
+        text-shadow:
+            0 0 30px rgba(255, 0, 255, 1),
+            0 0 60px rgba(0, 255, 255, 0.6);
+    }
+}
+
 /* 响应式设计 */
 @media (max-width: 480px) {
     .game-container {
@@ -369,6 +530,151 @@ button:disabled::before {
         font-size: 0.85rem;
         margin-bottom: 8px;
     }
+}
+
+/* 游戏信息容器 - 左右布局 */
+.game-info-container {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    height: 180px;
+}
+
+.game-info-container > * {
+    flex: 1;
+    height: 100%;
+    margin: 0;
+}
+
+/* 操作指南样式调整 */
+.game-instructions {
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* 排行榜样式 */
+.game-leaderboard {
+    background:
+        linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 15, 30, 0.8) 100%);
+    padding: 15px;
+    border: 1px solid #00ffff;
+    box-shadow:
+        0 0 10px rgba(0, 255, 255, 0.3),
+        inset 0 0 10px rgba(0, 255, 255, 0.1);
+    margin-top: 15px;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-leaderboard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00ffff, transparent);
+    animation: instructionGlow 3s ease-in-out infinite;
+}
+
+.game-leaderboard h3 {
+    color: #00ffff;
+    margin-bottom: 8px;
+    text-align: center;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.8);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 1.1rem;
+}
+
+.leaderboard-list {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    background: rgba(0, 0, 0, 0.4);
+    border-left: 3px solid #ff00ff;
+    font-size: 0.85rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.leaderboard-item:hover {
+    background: rgba(255, 0, 255, 0.1);
+    box-shadow: 0 0 8px rgba(255, 0, 255, 0.4);
+    transform: translateX(2px);
+}
+
+.leaderboard-item:nth-child(1) {
+    border-left-color: #ffff00;
+    background: rgba(255, 255, 0, 0.1);
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.3);
+}
+
+.leaderboard-item:nth-child(2) {
+    border-left-color: #c0c0c0;
+    background: rgba(192, 192, 192, 0.1);
+}
+
+.leaderboard-item:nth-child(3) {
+    border-left-color: #cd7f32;
+    background: rgba(205, 127, 50, 0.1);
+}
+
+.leaderboard-rank {
+    font-weight: bold;
+    color: #00ffff;
+    width: 25px;
+}
+
+.leaderboard-score {
+    font-weight: bold;
+    color: #ff00ff;
+    width: 50px;
+    text-align: right;
+}
+
+.leaderboard-level {
+    color: #00ffff;
+    width: 50px;
+    text-align: center;
+}
+
+.leaderboard-date {
+    color: #666;
+    font-size: 0.75rem;
+    flex-grow: 1;
+    text-align: right;
+    margin-left: 10px;
+}
+
+.leaderboard-empty {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+    font-style: italic;
+}
+
+/* 排行榜滚动条样式 */
+.leaderboard-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.leaderboard-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.leaderboard-list::-webkit-scrollbar-thumb {
+    background: linear-gradient(#ff00ff, #00ffff);
+    border-radius: 3px;
 }
 
 /* 隐藏滚动条 */

@@ -5,8 +5,84 @@ const config = {
     canvasHeight: 350,
     initialSpeed: 150,
     speedIncrement: 10,
-    maxSpeed: 50
+    maxSpeed: 50,
+    highScoresKey: 'snakeGameHighScores',
+    maxHighScores: 10
 };
+
+// 分数存储功能
+function getHighScores() {
+    try {
+        const scores = localStorage.getItem(config.highScoresKey);
+        return scores ? JSON.parse(scores) : [];
+    } catch (error) {
+        console.error('获取高分失败:', error);
+        return [];
+    }
+}
+
+function saveHighScore(score, level) {
+    try {
+        const highScores = getHighScores();
+        const newScore = {
+            score: score,
+            level: level,
+            date: new Date().toISOString()
+        };
+        
+        // 添加新分数
+        highScores.push(newScore);
+        
+        // 按分数排序（降序）
+        highScores.sort((a, b) => b.score - a.score);
+        
+        // 只保留前N名
+        const topScores = highScores.slice(0, config.maxHighScores);
+        
+        // 保存到localStorage
+        localStorage.setItem(config.highScoresKey, JSON.stringify(topScores));
+        
+        return true;
+    } catch (error) {
+        console.error('保存高分失败:', error);
+        return false;
+    }
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString();
+}
+
+// 更新排行榜显示
+function updateLeaderboard() {
+    const leaderboardElement = document.getElementById('leaderboard');
+    const highScores = getHighScores();
+    
+    // 清空现有内容
+    leaderboardElement.innerHTML = '';
+    
+    if (highScores.length === 0) {
+        // 显示空状态
+        leaderboardElement.innerHTML = '<div class="leaderboard-empty">暂无记录</div>';
+        return;
+    }
+    
+    // 创建排行榜条目
+    highScores.forEach((score, index) => {
+        const item = document.createElement('div');
+        item.className = 'leaderboard-item';
+        
+        item.innerHTML = `
+            <div class="leaderboard-rank">${index + 1}</div>
+            <div class="leaderboard-score">${score.score}</div>
+            <div class="leaderboard-level">Lv${score.level}</div>
+            <div class="leaderboard-date">${formatDate(score.date)}</div>
+        `;
+        
+        leaderboardElement.appendChild(item);
+    });
+}
 
 // 音效系统
 let audioContext = null;
@@ -193,29 +269,35 @@ let visualEffects = {
 function drawGame() {
     // 清空画布
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
     // 颜色脉冲效果
     if (visualEffects.pulseEffect) {
         visualEffects.pulseCounter += visualEffects.pulseSpeed;
         const pulseValue = Math.sin(visualEffects.pulseCounter) * 0.1 + 0.9;
-        
+
         // 应用脉冲效果到背景
         const bgGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-        bgGradient.addColorStop(0, `rgba(0, 0, 0, ${0.9 + pulseValue * 0.1})`);
-        bgGradient.addColorStop(1, `rgba(26, 0, 51, ${0.9 + pulseValue * 0.1})`);
-        
+        bgGradient.addColorStop(0, `rgba(0, 0, 0, ${0.95 + pulseValue * 0.05})`);
+        bgGradient.addColorStop(0.5, `rgba(5, 5, 25, ${0.95 + pulseValue * 0.05})`);
+        bgGradient.addColorStop(1, `rgba(10, 0, 30, ${0.95 + pulseValue * 0.05})`);
+
         ctx.fillStyle = bgGradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     } else {
         // 常规深色背景
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+        const bgGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        bgGradient.addColorStop(0, 'rgba(0, 0, 0, 0.95)');
+        bgGradient.addColorStop(0.5, 'rgba(5, 5, 25, 0.95)');
+        bgGradient.addColorStop(1, 'rgba(10, 0, 30, 0.95)');
+
+        ctx.fillStyle = bgGradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    
+
     // 绘制赛博朋克风格网格线
     ctx.strokeStyle = '#00ffff';
     ctx.lineWidth = 0.5;
-    ctx.globalAlpha = 0.3;
+    ctx.globalAlpha = 0.2;
     for (let i = 0; i <= config.canvasWidth; i += config.gridSize) {
         ctx.beginPath();
         ctx.moveTo(i, 0);
@@ -228,17 +310,39 @@ function drawGame() {
         ctx.lineTo(config.canvasWidth, i);
         ctx.stroke();
     }
+
+    // 绘制对角线装饰网格
+    ctx.strokeStyle = '#ff00ff';
+    ctx.lineWidth = 0.3;
+    ctx.globalAlpha = 0.15;
+    for (let i = -config.canvasWidth; i <= config.canvasWidth * 2; i += config.gridSize * 2) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i + config.canvasHeight, config.canvasHeight);
+        ctx.stroke();
+    }
+
+    // 绘制发光点在网格交叉处
+    ctx.fillStyle = '#00ffff';
+    ctx.globalAlpha = 0.3;
+    for (let i = 0; i <= config.canvasWidth; i += config.gridSize * 2) {
+        for (let j = 0; j <= config.canvasHeight; j += config.gridSize * 2) {
+            ctx.beginPath();
+            ctx.arc(i, j, 1.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
     ctx.globalAlpha = 1;
     
     // 绘制食物（赛博朋克霓虹效果）
     if (visualEffects.foodFlash) {
         ctx.fillStyle = visualEffects.flashCounter % 2 === 0 ? '#ff00ff' : '#ff66ff';
         visualEffects.flashCounter++;
-        
+
         // 添加食物发光效果
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 25;
         ctx.shadowColor = '#ff00ff';
-        
+
         if (visualEffects.flashCounter >= visualEffects.maxFlash) {
             visualEffects.foodFlash = false;
             visualEffects.flashCounter = 0;
@@ -246,28 +350,56 @@ function drawGame() {
         }
     } else {
         ctx.fillStyle = '#ff00ff';
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 15;
         ctx.shadowColor = '#ff00ff';
     }
-    
+
+    // 绘制食物外发光圈
     ctx.beginPath();
     ctx.arc(
         gameState.food.x * config.gridSize + config.gridSize / 2,
         gameState.food.y * config.gridSize + config.gridSize / 2,
-        config.gridSize / 2 - 2,
+        config.gridSize / 2 - 1,
         0,
         Math.PI * 2
     );
     ctx.fill();
-    
+
+    // 绘制食物内核
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(
+        gameState.food.x * config.gridSize + config.gridSize / 2,
+        gameState.food.y * config.gridSize + config.gridSize / 2,
+        config.gridSize / 4,
+        0,
+        Math.PI * 2
+    );
+    ctx.fill();
+
+    // 绘制食物周围的能量环
+    ctx.strokeStyle = '#00ffff';
+    ctx.lineWidth = 1;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = '#00ffff';
+    const foodX = gameState.food.x * config.gridSize + config.gridSize / 2;
+    const foodY = gameState.food.y * config.gridSize + config.gridSize / 2;
+    for (let ring = 0; ring < 3; ring++) {
+        ctx.beginPath();
+        ctx.arc(foodX, foodY, config.gridSize / 2 + 3 + ring * 3, 0, Math.PI * 2);
+        ctx.stroke();
+    }
+
     // 重置阴影
     ctx.shadowBlur = 0;
     
     // 绘制蛇（赛博朋克霓虹效果）
     for (let i = 0; i < gameState.snake.length; i++) {
         const segment = gameState.snake[i];
-        const opacity = 0.3 + (i / gameState.snake.length) * 0.7;
-        
+        const opacity = 0.4 + (i / gameState.snake.length) * 0.6;
+
         if (i === 0) {
             // 蛇头 - 霓虹蓝色渐变
             const gradient = ctx.createLinearGradient(
@@ -277,12 +409,13 @@ function drawGame() {
                 segment.y * config.gridSize + config.gridSize - 1
             );
             gradient.addColorStop(0, '#00ffff');
-            gradient.addColorStop(1, '#0088ff');
-            
+            gradient.addColorStop(0.5, '#0099ff');
+            gradient.addColorStop(1, '#0055ff');
+
             // 添加蛇头发光效果
-            ctx.shadowBlur = 20;
+            ctx.shadowBlur = 25;
             ctx.shadowColor = '#00ffff';
-            
+
             ctx.fillStyle = gradient;
             ctx.fillRect(
                 segment.x * config.gridSize + 1,
@@ -290,8 +423,8 @@ function drawGame() {
                 config.gridSize - 2,
                 config.gridSize - 2
             );
-            
-            // 蛇头边框
+
+            // 蛇头边框 - 发光效果
             ctx.strokeStyle = '#00ffff';
             ctx.lineWidth = 2;
             ctx.strokeRect(
@@ -300,32 +433,88 @@ function drawGame() {
                 config.gridSize - 2,
                 config.gridSize - 2
             );
-            
-            // 蛇眼 - 霓虹粉色
+
+            // 绘制蛇眼 - 霓虹粉色
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#ff00ff';
             ctx.fillStyle = '#ff00ff';
             ctx.beginPath();
             ctx.arc(
                 segment.x * config.gridSize + config.gridSize * 0.3,
-                segment.y * config.gridSize + config.gridSize * 0.3,
+                segment.y * config.gridSize + config.gridSize * 0.35,
                 3,
                 0,
                 Math.PI * 2
             );
             ctx.fill();
-            
+
             ctx.beginPath();
             ctx.arc(
                 segment.x * config.gridSize + config.gridSize * 0.7,
-                segment.y * config.gridSize + config.gridSize * 0.3,
+                segment.y * config.gridSize + config.gridSize * 0.35,
                 3,
                 0,
                 Math.PI * 2
             );
             ctx.fill();
+
+            // 蛇眼高光
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowBlur = 0;
+            ctx.beginPath();
+            ctx.arc(
+                segment.x * config.gridSize + config.gridSize * 0.3 - 1,
+                segment.y * config.gridSize + config.gridSize * 0.35 - 1,
+                1,
+                0,
+                Math.PI * 2
+            );
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(
+                segment.x * config.gridSize + config.gridSize * 0.7 - 1,
+                segment.y * config.gridSize + config.gridSize * 0.35 - 1,
+                1,
+                0,
+                Math.PI * 2
+            );
+            ctx.fill();
+
+            // 蛇头装饰 - 科技感线条
+            ctx.strokeStyle = '#ff00ff';
+            ctx.lineWidth = 1;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#ff00ff';
+            ctx.beginPath();
+            ctx.moveTo(segment.x * config.gridSize + config.gridSize / 2, segment.y * config.gridSize + 1);
+            ctx.lineTo(segment.x * config.gridSize + config.gridSize / 2, segment.y * config.gridSize + config.gridSize / 2);
+            ctx.stroke();
         } else {
             // 蛇身 - 霓虹蓝色，透明度渐变
-            ctx.fillStyle = `rgba(0, 255, 255, ${opacity})`;
+            const bodyGradient = ctx.createLinearGradient(
+                segment.x * config.gridSize + 1,
+                segment.y * config.gridSize + 1,
+                segment.x * config.gridSize + config.gridSize - 1,
+                segment.y * config.gridSize + config.gridSize - 1
+            );
+            bodyGradient.addColorStop(0, `rgba(0, 255, 255, ${opacity})`);
+            bodyGradient.addColorStop(1, `rgba(0, 150, 255, ${opacity})`);
+
+            ctx.fillStyle = bodyGradient;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = `rgba(0, 255, 255, ${opacity * 0.8})`;
             ctx.fillRect(
+                segment.x * config.gridSize + 1,
+                segment.y * config.gridSize + 1,
+                config.gridSize - 2,
+                config.gridSize - 2
+            );
+
+            // 蛇身边框 - 细线
+            ctx.strokeStyle = `rgba(0, 255, 255, ${opacity * 0.6})`;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(
                 segment.x * config.gridSize + 1,
                 segment.y * config.gridSize + 1,
                 config.gridSize - 2,
@@ -577,6 +766,9 @@ function gameOver() {
     // 更新游戏状态
     gameState.isRunning = false;
     
+    // 保存当前分数
+    saveHighScore(gameState.score, gameState.level);
+    
     // 更新按钮状态
     startBtn.disabled = false;
     pauseBtn.disabled = true;
@@ -587,6 +779,9 @@ function gameOver() {
     finalScoreElement.textContent = gameState.score;
     finalLevelElement.textContent = gameState.level;
     gameOverModal.style.display = 'block';
+    
+    // 更新排行榜显示
+    updateLeaderboard();
 }
 
 // 键盘事件处理
@@ -650,6 +845,7 @@ function initEventListeners() {
 function init() {
     initGame();
     initEventListeners();
+    updateLeaderboard(); // 初始化时显示排行榜
     console.log('贪吃蛇游戏已初始化，按Enter键开始游戏或点击开始按钮');
 }
 

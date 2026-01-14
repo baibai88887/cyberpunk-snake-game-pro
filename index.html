@@ -15,15 +15,9 @@
             <div class="level">LEVEL: <span id="level">1</span></div>
         </div>
 
-        <canvas id="gameCanvas" width="350" height="350"></canvas>
-
-        <div class="game-controls">
-            <button id="startBtn">启动程序</button>
-            <button id="pauseBtn" disabled>暂停运行</button>
-            <button id="restartBtn" disabled>重新初始化</button>
-        </div>
-
-        <div class="game-info-container">
+        <!-- 主内容区域：左右布局 -->
+        <div class="game-main-content">
+            <!-- 左侧：操作指南 -->
             <div class="game-instructions">
                 <h3>操作指南</h3>
                 <p>【方向键】控制移动方向</p>
@@ -32,6 +26,18 @@
                 <p>【警告】触碰边界或自身将终止程序</p>
             </div>
             
+            <!-- 中间：游戏Canvas和控制按钮 -->
+            <div class="game-center">
+                <canvas id="gameCanvas" width="350" height="350"></canvas>
+                
+                <div class="game-controls">
+                    <button id="startBtn">启动程序</button>
+                    <button id="pauseBtn" disabled>暂停运行</button>
+                    <button id="restartBtn" disabled>重新初始化</button>
+                </div>
+            </div>
+            
+            <!-- 右侧：排行榜 -->
             <div class="game-leaderboard">
                 <h3>排行榜</h3>
                 <div id="leaderboard" class="leaderboard-list">

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>贪吃蛇游戏</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">贪吃蛇游戏</h1>
+        
+        <div class="game-info">
+            <div class="score">分数: <span id="score">0</span></div>
+            <div class="level">等级: <span id="level">1</span></div>
+        </div>
+        
+        <canvas id="gameCanvas" width="350" height="350"></canvas>
+        
+        <div class="game-controls">
+            <button id="startBtn">开始游戏</button>
+            <button id="pauseBtn" disabled>暂停游戏</button>
+            <button id="restartBtn" disabled>重新开始</button>
+        </div>
+        
+        <div class="game-instructions">
+            <h3>游戏说明</h3>
+            <p>使用方向键控制贪吃蛇移动</p>
+            <p>吃到食物增加分数和长度</p>
+            <p>碰到边界或自身游戏结束</p>
+            <p>等级越高，速度越快</p>
+        </div>
+        
+        <div id="gameOverModal" class="modal">
+            <div class="modal-content">
+                <h2>游戏结束</h2>
+                <p>最终分数: <span id="finalScore">0</span></p>
+                <p>最终等级: <span id="finalLevel">1</span></p>
+                <button id="playAgainBtn">再玩一次</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

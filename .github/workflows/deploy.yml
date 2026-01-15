@@ -10,42 +10,28 @@ permissions:
   pages: write
   id-token: write
 
-env:
-  NODE_VERSION: 18
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: 18
           cache: 'npm'
 
-      - name: Print environment info
-        run: |
-          node --version
-          npm --version
-          pwd
-          ls -la
-
       - name: Install dependencies
-        run: npm install --verbose
+        run: npm ci
 
-      - name: Build project
-        run: npm run build --verbose
-
-      - name: Verify build output
-        run: ls -la dist
+      - name: Build
+        run: npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        with:
+          # 使用默认域名，不设置自定义域名
+          cname: ''
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

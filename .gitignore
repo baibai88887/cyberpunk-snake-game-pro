@@ -36,9 +36,9 @@ coverage/
 *.lcov
 
 # 包管理锁文件
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
 
 # 临时文件
 *.tmp

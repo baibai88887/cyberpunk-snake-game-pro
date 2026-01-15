@@ -1,0 +1,135 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: #000;
+    color: #00ffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.game-container {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #ff00ff;
+    padding: 20px;
+    text-align: center;
+    max-width: 800px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.game-title {
+    color: #ff00ff;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.game-main-content {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.game-instructions, .game-leaderboard {
+    width: 150px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    border: 1px solid #00ffff;
+    text-align: left;
+}
+
+.game-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#gameCanvas {
+    border: 2px solid #00ffff;
+    background: #000;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.game-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #ff00ff;
+    border: 1px solid #ff00ff;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+}
+
+button:hover {
+    background: rgba(255, 0, 255, 0.1);
+}
+
+button:disabled {
+    color: #666;
+    border-color: #666;
+    cursor: not-allowed;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #ff00ff;
+    padding: 30px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+.leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    border-left: 3px solid #ff00ff;
+}
+
+.leaderboard-empty {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+    font-style: italic;
+}
+
+/* 暂时移除复杂的动画和装饰效果 */

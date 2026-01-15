@@ -1,24 +1,30 @@
 {
   "name": "cyberpunk-snake-game",
   "version": "1.0.0",
+  "type": "module",
   "description": "一个采用赛博朋克风格设计的经典贪吃蛇网页小游戏",
-  "main": "index.html",
   "scripts": {
-    "start": "http-server -p 8000 -o",
-    "dev": "http-server -p 8000 -o -c-1",
-    "build": "echo '构建完成'"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "keywords": [
     "snake",
     "game",
     "cyberpunk",
     "html5",
-    "canvas"
+    "canvas",
+    "react"
   ],
   "author": "",
   "license": "MIT",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
   "devDependencies": {
-    "http-server": "^14.1.1"
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.11"
   },
   "engines": {
     "node": ">=14.0.0"

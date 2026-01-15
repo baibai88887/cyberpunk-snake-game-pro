@@ -4,58 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEON SNAKE - 赛博朋克贪吃蛇</title>
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="game-container">
-        <h1 class="game-title">NEON SNAKE</h1>
-
-        <div class="game-info">
-            <div class="score">SCORE: <span id="score">0</span></div>
-            <div class="level">LEVEL: <span id="level">1</span></div>
-        </div>
-
-        <!-- 主内容区域：左右布局 -->
-        <div class="game-main-content">
-            <!-- 左侧：操作指南 -->
-            <div class="game-instructions">
-                <h3>操作指南</h3>
-                <p>【方向键】控制移动方向</p>
-                <p>【空格键】暂停/继续运行</p>
-                <p>【规则】吸收能量块提升等级</p>
-                <p>【警告】触碰边界或自身将终止程序</p>
-            </div>
-            
-            <!-- 中间：游戏Canvas和控制按钮 -->
-            <div class="game-center">
-                <canvas id="gameCanvas" width="350" height="350"></canvas>
-                
-                <div class="game-controls">
-                    <button id="startBtn">启动程序</button>
-                    <button id="pauseBtn" disabled>暂停运行</button>
-                    <button id="restartBtn" disabled>重新初始化</button>
-                </div>
-            </div>
-            
-            <!-- 右侧：排行榜 -->
-            <div class="game-leaderboard">
-                <h3>排行榜</h3>
-                <div id="leaderboard" class="leaderboard-list">
-                    <div class="leaderboard-empty">暂无记录</div>
-                </div>
-            </div>
-        </div>
-
-        <div id="gameOverModal" class="modal">
-            <div class="modal-content">
-                <h2>系统终止</h2>
-                <p>最终得分: <span id="finalScore">0</span></p>
-                <p>最终等级: <span id="finalLevel">1</span></p>
-                <button id="playAgainBtn">重新启动</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
